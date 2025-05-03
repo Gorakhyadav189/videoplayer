@@ -1,7 +1,20 @@
 import { Router } from "express";
-import { rejisterUser } from "../controllers/user.controller.js";
+import { registerUser } from "../controllers/user.controller.js";
+import { uplode } from "../middlewares/multer.midleware.js"
 
-const router= new Router()
-router.route("/rejister").post(rejisterUser)
+const router = new Router()
+router.route("/register").post(
+    uplode.fields([
+        {
+            name: "avatar",
+            maxCount: 1
+        },
+        {
+            name: "coverImage",
+            maxCount: 1
+        }
 
-export  default router
+    ]),
+    registerUser)
+
+export default router

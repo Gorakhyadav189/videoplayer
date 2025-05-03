@@ -14,10 +14,11 @@ const registerUser = asyncHandler(async (req, res) => {
     // rmove password abd refrersh token field from responce
     //chek for user creation
     // return response
+    //tsk+>consol body,avatrlocalpath,
 
 
     const { fullname, email, username, password } = req.body
-    console.log("email", email);
+    // console.log("email", email);
 
     if ([fullname, email, username, password].some((field) =>
         field?.trim() === "")
@@ -25,15 +26,22 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields required")
     }
 
-    const existUser = User.findOne({
+    const existUser = await User.findOne({
         $or: [{ username }, { email }]
     })
     if (existUser) {
         throw new ApiError(409, "UserAlardey exist")
     }
-
+    // console.log(req.files)
     const avatarlocalpath = req.files?.avatar[0]?.path;
-    const coverlocalpath = req.files?.coverImage[1]?.path;
+    // const coverlocalpath = req.files?.coverImage[1]?.path;
+
+    let coverlocalpath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverlocalpath = req.files.coverImage[0].path
+
+
+    }
 
     if (!avatarlocalpath) {
         throw new ApiError(400, "Avatar fielse is require")

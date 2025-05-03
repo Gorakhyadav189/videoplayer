@@ -17,7 +17,8 @@ const uplodeoncloudenary = async (localfilepath) => {
         })
         //fillhas been uplodeded successfuly
 
-        console.log("file is uploded on cloudenary", responce.url)
+        // console.log("file is uploded on cloudenary", responce.url)
+        fs.unlinkSync(localfilepath)
         return responce
 
 

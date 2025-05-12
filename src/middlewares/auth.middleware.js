@@ -12,7 +12,7 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
         if (!token) {
             throw new ApiError(401, "unauthrized user")
         }
-        const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECREAT)
+        const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
 
         const user = await User.findById(decodeToken?._id).select("-password -refreshToken")
 

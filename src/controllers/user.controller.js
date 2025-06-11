@@ -170,7 +170,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 })
 const refresAccesshToken = asyncHandler(async (req, res) => {
-    const incomingRefreshToken = req.cookie.refreshToken || req.body
+    const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken
 
     if (!incomingRefreshToken) {
         throw new ApiError(400, "Unauthroized request")
@@ -218,6 +218,103 @@ const refresAccesshToken = asyncHandler(async (req, res) => {
 
 })
 
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = req.body
+
+
+    const user = await User.findById(req.user?._id)
+    const isPasswordCorrect = await user.ispasswordCorrect(oldPassword)
+
+    if (!isPasswordCorrect) {
+        throw new ApiError(401, "invalid old password")
+    }
+    user.password = new password
+    await user.save({ validateBeforeSave: false })
+
+    return res.status(200)
+        .json(new ApiResponse(200, {}, "password changed succesfully"))
+
+})
+
+const getCurrentuser = asyncHandler(async (req, res) => {
+    return res.status(200)
+        .json(200, req.user, "current user fetched successfully")
+
+})
+
+const updateAccountdetails = asyncHandler(async (req, res) => {
+    const { fullname, email } = req.body
+
+    if (!fullname || !email) {
+        throw new ApiError(400, "All fields are required ")
+    }
+    const user = User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                fullname: fullname,
+                email: email
+            }
+        },
+        { new: true }
+    ).select("-password")
+    return res
+        .status(200)
+        .json(new ApiResponse(200, user, "Accountdetails updated succesfully"))
+})
+
+const updateuseravatar = asyncHandler(async (req, res) => {
+    const avatarlocalpath = req.file?.path
+
+    if (!avatarlocalpath) {
+        throw new ApiError(400, "Aavatra file is missimg")
+    }
+
+    const avatra = await uplodeoncloudenary(avatarlocalpath)
+    if (!avatra.url) {
+        throw new ApiError(400, "Error while uploading on avatra")
+    }
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                avatra: avatra.url
+            }
+        },
+        { new: true }
+    ).select("-password")
+    return res
+        .status(200)
+        .json(new ApiResponse(200, user, "avatar  updated succesfully"))
+})
+const updatecoverImage = asyncHandler(async (req, res) => {
+    const coverimagelocalpath = req.file?.path
+
+    if (!coverimagelocalpath) {
+        throw new ApiError(400, "cover file is missimg")
+    }
+
+    const coverImage = await uplodeoncloudenary(coverimagelocalpath)
+    if (!coverImage.url) {
+        throw new ApiError(400, "Error while uploading on coverimage")
+    }
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                coverImage: coverImage.url
+            }
+        },
+        { new: true }
+    ).select("-password")
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, user, "coverimage updated successfully")
+        )
+})
+
+
 
 // export { loginUser }
-export { registerUser, loginUser, logoutUser, refresAccesshToken }
+export { registerUser, loginUser, logoutUser, refresAccesshToken, changeCurrentPassword, getCurrentuser, updateAccountdetails, updateuseravatar }

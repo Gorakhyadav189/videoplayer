@@ -238,7 +238,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 
 const getCurrentuser = asyncHandler(async (req, res) => {
     return res.status(200)
-        .json(200, req.user, "current user fetched successfully")
+        .json(new ApiResponse 200, req.user, "current user fetched successfully")
 
 })
 
@@ -317,4 +317,4 @@ const updatecoverImage = asyncHandler(async (req, res) => {
 
 
 // export { loginUser }
-export { registerUser, loginUser, logoutUser, refresAccesshToken, changeCurrentPassword, getCurrentuser, updateAccountdetails, updateuseravatar }
+export { registerUser, loginUser, logoutUser, refresAccesshToken, changeCurrentPassword, getCurrentuser, updateAccountdetails, updateuseravatar, updatecoverImage }
